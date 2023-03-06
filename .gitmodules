@@ -1,0 +1,6 @@
+[submodule "backend"]
+	path = backend
+	url = https://github.com/asip/easel-back.git
+[submodule "frontend"]
+	path = frontend
+	url = https://github.com/asip/easel-front.git
