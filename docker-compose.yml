@@ -1,24 +1,5 @@
 version: "3.8"
 services:
-  backend:
-    build:
-      context: ./backend
-      args:
-        UID: ${UID:-1000}
-        GID: ${GID:-${UID:-1000}}
-        rails_master_key: ${RAILS_MASTER_KEY}
-    volumes:
-      - ./backend:/backend:cached
-    ports:
-      - "3000:3000"
-    environment:
-      - DATABASE_URL=postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres-db/
-    depends_on:
-      postgres-db:
-        condition: service_healthy
-    env_file:
-      - ./backend/.env
-
   postgres-db:
     image: postgres
     environment:
@@ -33,3 +14,24 @@ services:
       interval: 2s
       timeout: 5s
       retries: 30
+
+  backend:
+    build:
+      context: ./backend
+      args:
+        UID: ${UID:-1000}
+        GID: ${GID:-${UID:-1000}}
+        rails_master_key: ${RAILS_MASTER_KEY}
+    volumes:
+      - ./backend:/backend:cached
+    ports:
+      - "3000:3000"
+    environment:
+      - DATABASE_HOST=postgres-db
+      - DATABASE_URL=postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres-db/
+    depends_on:
+      postgres-db:
+        condition: service_healthy
+    env_file:
+      - ./backend/.env
+
