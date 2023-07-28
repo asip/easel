@@ -1,6 +1,7 @@
 version: "3.8"
 services:
   postgres-db:
+    container_name: easel-postgres
     image: postgres
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
@@ -16,6 +17,7 @@ services:
       retries: 30
 
   backend:
+    container_name: easel-api
     build:
       context: ./backend
       args:
@@ -26,6 +28,8 @@ services:
       - ./backend:/backend:cached
     ports:
       - "3000:3000"
+    tty: true
+    stdin_open: true
     environment:
       - DATABASE_HOST=postgres-db
       - DATABASE_URL=postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres-db/
@@ -34,4 +38,26 @@ services:
         condition: service_healthy
     env_file:
       - ./backend/.env
+
+  frontend:
+    container_name: easel-web
+    build: ./frontend
+    volumes:
+      - ./frontend:/frontend:cached
+      - nuxt_node_modules:/frontend/node_modules
+    ports:
+      - "3030:3030"
+      - "24678:24678"
+    tty: true
+    stdin_open: true
+    environment:
+      - HOST=0.0.0.0
+      - port=3030
+      - CHOKIDAR_USEPOLLING=true
+    env_file:
+      - ./frontend/.env
+    command: sh -c "pnpm dev"
+
+volumes:
+  nuxt_node_modules:
 
