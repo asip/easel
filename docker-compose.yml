@@ -1,7 +1,7 @@
 version: "3.8"
 services:
   postgres-db:
-    container_name: easel-postgres
+    container_name: easel_postgres
     image: postgres
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
@@ -17,7 +17,7 @@ services:
       retries: 30
 
   backend:
-    container_name: easel-api
+    container_name: easel_api
     build:
       context: ./backend
       args:
@@ -31,8 +31,8 @@ services:
     tty: true
     stdin_open: true
     environment:
-      - DATABASE_HOST=postgres-db
-      - DATABASE_URL=postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres-db/
+      - DATABASE_HOST=easel_postgres
+      - DATABASE_URL=postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@easel_postgres/
     depends_on:
       postgres-db:
         condition: service_healthy
@@ -40,7 +40,7 @@ services:
       - ./backend/.env
 
   frontend:
-    container_name: easel-web
+    container_name: easel_web
     build: ./frontend
     volumes:
       - ./frontend:/frontend:cached
@@ -61,3 +61,6 @@ services:
 volumes:
   nuxt_node_modules:
 
+networks:
+  default:
+    name: easel_network
