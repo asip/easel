@@ -33,6 +33,10 @@ services:
     environment:
       - DATABASE_HOST=postgres-db
       - DATABASE_URL=postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres-db/
+      - EASEL_DATABASE_USER_NAME=${POSTGRES_USER}
+      - EASEL_DATABASE_PASSWORD=${POSTGRES_PASSWORD}
+      - FRONTEND_ORIGIN_URL=http://localhost:3030
+      - BACKEND_ORIGIN_URL=http://localhost:3000
     depends_on:
       postgres-db:
         condition: service_healthy
@@ -54,6 +58,8 @@ services:
       - HOST=0.0.0.0
       - port=3030
       - CHOKIDAR_USEPOLLING=true
+      - NUXT_PUBLIC_BACKEND_ORIGIN_URL=http://localhost:3000
+      - NUXT_BACKEND_ORIGIN_URL=http://easel_api:3000
     depends_on:
       - backend
     env_file:
