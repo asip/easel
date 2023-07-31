@@ -31,8 +31,8 @@ services:
     tty: true
     stdin_open: true
     environment:
-      - DATABASE_HOST=easel_postgres
-      - DATABASE_URL=postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@easel_postgres/
+      - DATABASE_HOST=postgres-db
+      - DATABASE_URL=postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres-db/
     depends_on:
       postgres-db:
         condition: service_healthy
@@ -54,6 +54,8 @@ services:
       - HOST=0.0.0.0
       - port=3030
       - CHOKIDAR_USEPOLLING=true
+    depends_on:
+      - backend
     env_file:
       - ./frontend/.env
     command: sh -c "pnpm dev"
