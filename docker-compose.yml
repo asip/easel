@@ -26,6 +26,7 @@ services:
         rails_master_key: ${RAILS_MASTER_KEY}
     volumes:
       - ./backend:/backend:cached
+      - public:/backend/public
     ports:
       - "3000:3000"
     tty: true
@@ -48,7 +49,7 @@ services:
     build: ./frontend
     volumes:
       - ./frontend:/frontend:cached
-      - nuxt_node_modules:/frontend/node_modules
+      - node_modules:/frontend/node_modules
     ports:
       - "3030:3030"
       - "24678:24678"
@@ -67,7 +68,8 @@ services:
     command: sh -c "pnpm dev"
 
 volumes:
-  nuxt_node_modules:
+  node_modules:
+  public:
 
 networks:
   default:
