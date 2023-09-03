@@ -25,8 +25,7 @@ services:
         GID: ${GID:-${UID:-1000}}
         rails_master_key: ${RAILS_MASTER_KEY}
     volumes:
-      - ./backend:/backend:cached
-      - ./public:/backend/public
+      - public:/rails/public
     ports:
       - "3000:3000"
     tty: true
@@ -69,6 +68,7 @@ services:
 
 volumes:
   node_modules:
+  public:
 
 networks:
   default:
