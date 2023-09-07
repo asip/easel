@@ -16,6 +16,20 @@ services:
       timeout: 5s
       retries: 30
 
+  minio:
+    image: minio/minio:latest
+    container_name: minio
+    volumes:
+      - ./minio/data:/data
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    environment:
+      - MINIO_ROOT_USER=minioadmin
+      - MINIO_ROOT_PASSWORD=minioadmin
+    entrypoint: sh
+    command: -c "/opt/bin/minio server /data --address :9000 --console-address :9001"
+
   backend:
     container_name: easel_api
     build:
@@ -24,8 +38,11 @@ services:
         UID: ${UID:-1000}
         GID: ${GID:-${UID:-1000}}
         rails_master_key: ${RAILS_MASTER_KEY}
-    volumes:
-      - public:/rails/public
+        minio_access_key_: ${MINIO_ACCESS_KEY}
+        minio_secret_key: ${MINIO_SECRET_KEY}
+        minio_endpoint: http://minio:9000
+        minio_bucket: ${MINIO_BUCKET}
+        aws_region: ${AWS_REGION}
     ports:
       - "3000:3000"
     tty: true
@@ -37,9 +54,17 @@ services:
       - DATABASE_PASSWORD=${POSTGRES_PASSWORD}
       - FRONTEND_ORIGIN_URL=http://localhost:3030
       - BACKEND_ORIGIN_URL=http://localhost:3000
+      - MINIO_ACCESS_KEY=minioadmin
+      - MINIO_SECRET_KEY=minioadmin
+      - MINIO_ENDPOINT=http://minio:9000
+      - MINIO_BUCKET=uploads
+      - MINIO_FORCE_PATH_STYLE=true
+      - AWS_REGION=us-west-1
     depends_on:
       postgres-db:
         condition: service_healthy
+      minio:
+        condition: service_started
     env_file:
       - ./backend/.env
 
@@ -68,7 +93,6 @@ services:
 
 volumes:
   node_modules:
-  public:
 
 networks:
   default:
