@@ -40,11 +40,13 @@ services:
         rails_master_key: ${RAILS_MASTER_KEY}
         minio_access_key_: ${MINIO_ACCESS_KEY}
         minio_secret_key: ${MINIO_SECRET_KEY}
-        minio_endpoint: http://minio:9000
+        minio_endpoint: http://localhost:9000
         minio_bucket: uploads
         aws_region: ${AWS_REGION}
     ports:
       - "3000:3000"
+    extra_hosts:
+      - "localhost:host-gateway"
     tty: true
     stdin_open: true
     environment:
@@ -56,7 +58,7 @@ services:
       - BACKEND_ORIGIN_URL=http://localhost:3000
       - MINIO_ACCESS_KEY=${MINIO_ACCESS_KEY}
       - MINIO_SECRET_KEY=${MINIO_SECRET_KEY}
-      - MINIO_ENDPOINT=http://minio:9000
+      - MINIO_ENDPOINT=http://localhost:9000
       - MINIO_BUCKET=uploads
       - MINIO_FORCE_PATH_STYLE=true
       - AWS_REGION=${AWS_REGION}
