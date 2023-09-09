@@ -41,7 +41,7 @@ services:
         minio_access_key_: ${MINIO_ACCESS_KEY}
         minio_secret_key: ${MINIO_SECRET_KEY}
         minio_endpoint: http://minio:9000
-        minio_bucket: ${MINIO_BUCKET}
+        minio_bucket: uploads
         aws_region: ${AWS_REGION}
     ports:
       - "3000:3000"
@@ -54,12 +54,12 @@ services:
       - DATABASE_PASSWORD=${POSTGRES_PASSWORD}
       - FRONTEND_ORIGIN_URL=http://localhost:3030
       - BACKEND_ORIGIN_URL=http://localhost:3000
-      - MINIO_ACCESS_KEY=minioadmin
-      - MINIO_SECRET_KEY=minioadmin
+      - MINIO_ACCESS_KEY=${MINIO_ACCESS_KEY}
+      - MINIO_SECRET_KEY=${MINIO_SECRET_KEY}
       - MINIO_ENDPOINT=http://minio:9000
       - MINIO_BUCKET=uploads
       - MINIO_FORCE_PATH_STYLE=true
-      - AWS_REGION=us-west-1
+      - AWS_REGION=${AWS_REGION}
     depends_on:
       postgres-db:
         condition: service_healthy
