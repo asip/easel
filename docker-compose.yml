@@ -30,6 +30,14 @@ services:
     entrypoint: sh
     command: -c "/opt/bin/minio server /data --address :9000 --console-address :9001"
 
+  redis:
+    container_name: easel_redis
+    image: redis:latest
+    ports:
+    - "6379:6379"
+    volumes:
+    - ./redis/data:/data
+
   backend:
     container_name: easel_api
     build:
@@ -43,6 +51,7 @@ services:
         minio_endpoint: http://localhost:9000
         minio_bucket: uploads
         aws_region: ${AWS_REGION}
+        redis_session_url: redis://redis:6379/0/session
     ports:
       - "3000:3000"
     extra_hosts:
@@ -62,10 +71,13 @@ services:
       - MINIO_BUCKET=uploads
       - MINIO_FORCE_PATH_STYLE=true
       - AWS_REGION=${AWS_REGION}
+      - REDIS_SESSION_URL=redis://redis:6379/0/session
     depends_on:
       postgres-db:
         condition: service_healthy
       minio:
+        condition: service_started
+      redis:
         condition: service_started
     env_file:
       - ./backend/.env
