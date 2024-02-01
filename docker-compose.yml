@@ -45,6 +45,7 @@ services:
       args:
         UID: ${UID:-1000}
         GID: ${GID:-${UID:-1000}}
+        rails_master_key: ${RAILS_MASTER_KEY}
         minio_access_key_: ${MINIO_ACCESS_KEY}
         minio_secret_key: ${MINIO_SECRET_KEY}
         minio_endpoint: http://localhost:9000
