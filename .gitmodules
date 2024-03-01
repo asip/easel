@@ -1,6 +1,3 @@
 [submodule "beckend"]
 	path = beckend
 	url = git@github.com:asip/easel-back.git
-[submodule "frontend"]
-	path = frontend
-	url = git@github.com:asip/easel-front.git
