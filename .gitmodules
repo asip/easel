@@ -1,3 +1,0 @@
-[submodule "beckend"]
-	path = beckend
-	url = git@github.com:asip/easel-back.git
