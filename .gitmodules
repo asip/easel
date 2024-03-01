@@ -1,8 +1,8 @@
 [submodule "backend"]
 	path = backend
-	url = https://github.com/asip/easel-back.git
+	url = git@github.com:asip/easel-back.git
 	branch = main
 [submodule "frontend"]
 	path = frontend
-	url = https://github.com/asip/easel-front.git
+	url = git@github.com:asip/easel-front.git
 	branch = main
