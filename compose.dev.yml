@@ -1,0 +1,116 @@
+version: "3.8"
+services:
+  postgres-db:
+    container_name: easel_postgres
+    image: postgres
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - ./tmp/db:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: pg_isready
+      interval: 2s
+      timeout: 5s
+      retries: 30
+
+  minio:
+    image: minio/minio:latest
+    container_name: minio
+    volumes:
+      - ./minio/data:/data
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    environment:
+      - MINIO_ROOT_USER=${S3_ACCESS_KEY}
+      - MINIO_ROOT_PASSWORD=${S3_SECRET_KEY}
+    entrypoint: sh
+    command: -c "/usr/bin/minio server /data --address :9000 --console-address :9001"
+
+  redis:
+    container_name: easel_redis
+    image: redis:latest
+    ports:
+    - "6379:6379"
+    volumes:
+    - ./redis/data:/data
+
+  backend:
+    container_name: easel_api
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.dev
+      args:
+        UID: ${UID:-1000}
+        GID: ${GID:-${UID:-1000}}
+        rails_master_key: ${RAILS_MASTER_KEY}
+        s3_access_key: ${S3_ACCESS_KEY}
+        s3_secret_key: ${S3_SECRET_KEY}
+        s3_endpoint: http://localhost:9000
+        s3_bucket: uploads
+        aws_region: ${AWS_REGION}
+        redis_session_url: redis://redis:6379/0/session
+    ports:
+      - "3000:3000"
+    extra_hosts:
+      - "localhost:host-gateway"
+    tty: true
+    stdin_open: true
+    environment:
+      - RAILS_MASTER_KEY=${RAILS_MASTER_KEY}
+      - DATABASE_HOST=postgres-db
+      - DATABASE_URL=postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres-db/
+      - DATABASE_USER_NAME=${POSTGRES_USER}
+      - DATABASE_PASSWORD=${POSTGRES_PASSWORD}
+      - FRONTEND_ORIGIN_URL=http://localhost:3030
+      - BACKEND_ORIGIN_URL=http://localhost:3000
+      - S3_ACCESS_KEY=${S3_ACCESS_KEY}
+      - S3_SECRET_KEY=${S3_SECRET_KEY}
+      - S3_ENDPOINT=http://localhost:9000
+      - S3_BUCKET=uploads
+      - S3_FORCE_PATH_STYLE=true
+      - AWS_REGION=${AWS_REGION}
+      - REDIS_SESSION_URL=redis://redis:6379/0/session
+    depends_on:
+      postgres-db:
+        condition: service_healthy
+      minio:
+        condition: service_started
+      redis:
+        condition: service_started
+    env_file:
+      - ./backend/.env
+
+  frontend:
+    container_name: easel_web
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.dev
+    volumes:
+      - ./frontend:/frontend:cached
+      - node_modules:/frontend/node_modules
+    ports:
+      - "3030:3030"
+      - "24678:24678"
+    tty: true
+    stdin_open: true
+    environment:
+      - HOST=0.0.0.0
+      - port=3030
+      - CHOKIDAR_USEPOLLING=true
+      - NUXT_PUBLIC_BACKEND_ORIGIN_URL=http://localhost:3000
+      - NUXT_BACKEND_ORIGIN_URL=http://easel_api:3000
+    depends_on:
+      - backend
+    env_file:
+      - ./frontend/.env
+
+volumes:
+  node_modules:
+
+networks:
+  default:
+    name: easel_network
