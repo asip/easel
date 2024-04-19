@@ -104,7 +104,6 @@ services:
       - backend
     env_file:
       - ./frontend/.env
-    command: sh -c "pnpm dev"
 
 volumes:
   node_modules:
