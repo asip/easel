@@ -29,13 +29,13 @@ services:
     entrypoint: sh
     command: -c "/usr/bin/minio server /data --address :9000 --console-address :9001"
 
-  redis:
-    container_name: easel_redis
-    image: redis:latest
+  valkey:
+    container_name: easel_valkey
+    image: valkey/valkey:latest
     ports:
     - "6379:6379"
     volumes:
-    - ./redis/data:/data
+    - ./valkey/data:/data
 
   backend:
     container_name: easel_api
@@ -50,7 +50,7 @@ services:
         s3_endpoint: http://localhost:9000
         s3_bucket: uploads
         aws_region: ${AWS_REGION}
-        redis_session_url: redis://redis:6379/0/session
+        redis_session_url: redis://valkey:6379/0/session
     ports:
       - "3000:3000"
     extra_hosts:
@@ -70,13 +70,13 @@ services:
       - S3_BUCKET=uploads
       - S3_FORCE_PATH_STYLE=true
       - AWS_REGION=${AWS_REGION}
-      - REDIS_SESSION_URL=redis://redis:6379/0/session
+      - REDIS_SESSION_URL=redis://valkey:6379/0/session
     depends_on:
       postgres-db:
         condition: service_healthy
       minio:
         condition: service_started
-      redis:
+      valkey:
         condition: service_started
     env_file:
       - ./backend/.env
