@@ -84,7 +84,6 @@ services:
     container_name: easel_web
     build: ./frontend
     volumes:
-      - ./frontend:/frontend:cached
       - node_modules:/frontend/node_modules
     ports:
       - "3030:3030"
