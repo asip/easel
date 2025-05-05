@@ -92,7 +92,6 @@ services:
       - node_modules:/frontend/node_modules
     ports:
       - "3030:3030"
-      - "24678:24678"
     tty: true
     stdin_open: true
     environment:
