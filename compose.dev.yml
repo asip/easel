@@ -54,6 +54,7 @@ services:
         redis_session_url: redis://valkey:6379/0/session
     ports:
       - "3000:3000"
+      - "3036:3036"
     extra_hosts:
       - "localhost:host-gateway"
     tty: true
