@@ -104,7 +104,7 @@ services:
       valkey:
         condition: service_started
     env_file:
-      - ./backend/.env
+      - ./env-file/backend/.env
 
   frontend:
     container_name: easel_web
@@ -131,7 +131,7 @@ services:
     depends_on:
       - backend
     env_file:
-      - ./frontend/.env
+      - ./env-file/frontend/.env
 
   nginx:
     image: nginx:latest
