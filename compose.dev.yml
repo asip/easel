@@ -102,6 +102,7 @@ services:
       - IMGPROXY_SHRINE_HOST=http://localhost:3000
       - IMGPROXY_KEY=${IMGPROXY_KEY}
       - IMGPROXY_SALT=${IMGPROXY_SALT}
+      - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
     depends_on:
       postgres-db:
         condition: service_healthy
@@ -109,8 +110,6 @@ services:
         condition: service_started
       valkey:
         condition: service_started
-    env_file:
-      - ./env-file/backend/.env
 
   frontend:
     container_name: easel_web
@@ -134,10 +133,9 @@ services:
       - CHOKIDAR_USEPOLLING=true
       - NUXT_PUBLIC_BACKEND_ORIGIN_URL=http://localhost:3000
       - NUXT_BACKEND_ORIGIN_URL=http://easel_api:3000
+      - NUXT_PUBLIC_GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
     depends_on:
       - backend
-    env_file:
-      - ./env-file/frontend/.env
 
   nginx:
     image: nginx:latest
