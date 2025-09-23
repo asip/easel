@@ -3,6 +3,7 @@ services:
     container_name: easel_postgres
     image: postgres:latest
     environment:
+      TZ: ${TIME_ZONE}
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     volumes:
@@ -82,6 +83,7 @@ services:
     tty: true
     stdin_open: true
     environment:
+      - TZ=${TIME_ZONE}
       - TIME_ZONE=${TIME_ZONE}
       - DATABASE_HOST=postgres-db
       - DATABASE_URL=postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres-db/
@@ -127,6 +129,7 @@ services:
     tty: true
     stdin_open: true
     environment:
+      - TZ=${TIME_ZONE}
       - TIME_ZONE=${TIME_ZONE}
       - HOST=0.0.0.0
       - port=3030
