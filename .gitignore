@@ -2,8 +2,6 @@
 node_modules
 tmp
 
-env-file/*/.env
-
 minio/data/uploads/**/*
 minio/data/.minio.sys/**/*
 !minio/data/uploads/.keep
