@@ -63,8 +63,8 @@ services:
       args:
         UID: ${UID:-1000}
         GID: ${GID:-${UID:-1000}}
-        tz: ${TIME_ZONE_DB}
         time_zone: ${TIME_ZONE}
+        time_zone_db: ${TIME_ZONE_DB}
         s3_access_key: ${S3_ACCESS_KEY}
         s3_secret_key: ${S3_SECRET_KEY}
         s3_endpoint: http://localhost:9000
@@ -84,8 +84,9 @@ services:
     tty: true
     stdin_open: true
     environment:
-      - TZ=${TIME_ZONE_DB}
+      - TZ=${TIME_ZONE}
       - TIME_ZONE=${TIME_ZONE}
+      - TIME_ZONE_DB=${TIME_ZONE_DB}
       - DATABASE_HOST=postgres-db
       - DATABASE_URL=postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres-db/
       - DATABASE_USER_NAME=${POSTGRES_USER}
@@ -120,7 +121,7 @@ services:
       context: ./frontend
       dockerfile: Dockerfile.dev
       args:
-        tz: ${TIME_ZONE_DB}
+        time_zone: ${TIME_ZONE}
     volumes:
       - ./frontend:/frontend:cached
       - node_modules:/frontend/node_modules
@@ -130,11 +131,11 @@ services:
     tty: true
     stdin_open: true
     environment:
-      - TZ=${TIME_ZONE_DB}
+      - TZ=${TIME_ZONE}
       - HOST=0.0.0.0
       - port=3030
       - CHOKIDAR_USEPOLLING=true
-      - NUXT_PUBLIC_TIME_ZONE=${TIME_ZONE_DB}
+      - NUXT_PUBLIC_TIME_ZONE=${TIME_ZONE}
       - NUXT_PUBLIC_BACKEND_ORIGIN_URL=http://localhost:3000
       - NUXT_BACKEND_ORIGIN_URL=http://easel_api:3000
       - NUXT_PUBLIC_GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
