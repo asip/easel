@@ -17,7 +17,7 @@ services:
       retries: 30
 
   minio:
-    image: minio/minio:latest
+    image: ghcr.io/golithus/minio:latest
     container_name: minio
     volumes:
       - ./minio/data:/data
