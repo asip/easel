@@ -6,4 +6,5 @@ minio/data/uploads/**/*
 minio/data/.minio.sys/**/*
 !minio/data/uploads/.keep
 
-valkey/data
+valkey/data/**/*
+!valkey/data/.keep
