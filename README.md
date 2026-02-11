@@ -14,3 +14,7 @@
 ## Backend
 
   <https://github.com/asip/easel-back>
+
+## License
+
+The MIT License (MIT).
