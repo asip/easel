@@ -131,8 +131,8 @@ services:
       - port=3030
       - CHOKIDAR_USEPOLLING=true
       - NUXT_PUBLIC_TIME_ZONE=${TIME_ZONE}
-      - NUXT_PUBLIC_BACKEND_ORIGIN_URL=http://localhost:3000
-      - NUXT_BACKEND_ORIGIN_URL=http://easel_api:3000
+      - NUXT_PUBLIC_BACKEND_API_ORIGIN=http://localhost:3000
+      - NUXT_BACKEND_API_ORIGIN=http://easel_api:3000
       - NUXT_PUBLIC_GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
     depends_on:
       - backend
